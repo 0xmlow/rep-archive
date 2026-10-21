@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Eisman Playbook Decoded</title>
+<meta name="description" content="An independent reading of every episode of The Real Eisman Playbook, public and paid: the recurring theses, the guest bench, the frameworks he teaches, and how his calls changed.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://0xmlow.github.io/rep-archive/">
+<meta property="og:title" content="The Eisman Playbook Decoded">
+<meta property="og:description" content="Every episode of Steve Eisman's podcast, public and paid, read end to end. The theses, the guests, the frameworks, and how the calls changed.">
+<meta property="og:image" content="https://0xmlow.github.io/rep-archive/assets/share-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Eisman Playbook Decoded, a Blossom Research report">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Eisman Playbook Decoded">
+<meta name="twitter:description" content="Every episode of Steve Eisman's podcast, public and paid, read end to end.">
+<meta name="twitter:image" content="https://0xmlow.github.io/rep-archive/assets/share-card.png">
+<link rel="icon" href="assets/mlow-eye.png">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="#top">
+      <img src="assets/mlow-logo-black.png" alt="MLOW">
+      <span class="div"></span>
+      <span class="wm">Blossom Research</span>
+    </a>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-panel="report" aria-selected="true">The Report</button>
+      <button class="tab" role="tab" data-panel="episodes" aria-selected="false">Episodes</button>
+      <button class="tab" role="tab" data-panel="themes" aria-selected="false">Themes</button>
+      <button class="tab" role="tab" data-panel="guests" aria-selected="false">Guests</button>
+      <button class="tab" role="tab" data-panel="posters" aria-selected="false">Posters</button>
+      <button class="tab" role="tab" data-panel="about" aria-selected="false">About</button>
+    </div>
+    <button class="icon-btn" id="theme-toggle" title="Switch between Daylight and Vault" aria-label="Switch theme">
+      <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+        <circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
+        <path d="M8 1.4a6.6 6.6 0 0 1 0 13.2z" fill="currentColor"></path>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">
+          <span>The Real Eisman Playbook</span><span class="sep">/</span>
+          <span id="hero-range">Jun 2025 to Aug 2026</span><span class="sep">/</span>
+          <span>Full corpus analysis, third edition</span>
+        </div>
+        <h1>The Eisman Playbook <span class="em">Decoded</span></h1>
+        <p class="dek" id="hero-dek"></p>
+        <div class="stats" id="stats"></div>
+      </div>
+      <div>
+        <div class="cover">
+          <img src="assets/eisman-cover.jpg" alt="The Real Eisman Playbook cover art" width="1400" height="1400">
+          <div class="cover-cap">Steve Eisman &middot; weekly since June 2025</div>
+        </div>
+        <div class="cover-links">
+          <a class="chip" href="https://www.youtube.com/@RealEismanPlaybook" target="_blank" rel="noopener">YouTube</a>
+          <a class="chip" href="https://realeismanplaybook.substack.com/" target="_blank" rel="noopener">Substack</a>
+          <a class="chip" href="https://podcasts.apple.com/us/podcast/the-real-eisman-playbook/id1818671690" target="_blank" rel="noopener">Apple</a>
+          <a class="chip" href="https://open.spotify.com/show/12Z1fRNhtOLLRCAtjCOPsx" target="_blank" rel="noopener">Spotify</a>
+        </div>
+        <p class="dl-lbl">Download this report</p>
+        <div class="cover-links">
+          <a class="chip dl" href="downloads/Eisman-Playbook-Decoded-v3.pdf" download>PDF</a>
+          <a class="chip dl" href="downloads/Eisman-Playbook-Decoded-v3.docx" download>Word</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="marquee" id="marquee" aria-label="The Eisman method, in posters"></div>
+
+<main class="wrap">
+
+  <!-- ============ REPORT ============ -->
+  <section class="panel active" id="panel-report">
+    <div class="layout">
+      <nav class="toc"><p class="toc-lbl">Contents</p><div id="toc"></div></nav>
+      <div id="report"></div>
+    </div>
+  </section>
+
+  <!-- ============ EPISODES ============ -->
+  <section class="panel" id="panel-episodes">
+    <div class="controls">
+      <input class="search" id="q" type="search" placeholder="Search titles, guests, synopses, dossiers" aria-label="Search episodes">
+      <div class="filters" id="kind-filters"></div>
+      <div class="filters" id="theme-filters"></div>
+      <span class="count" id="count"></span>
+    </div>
+    <div class="eplist" id="eplist"></div>
+    <div id="bonus-block"></div>
+  </section>
+
+  <!-- ============ THEMES ============ -->
+  <section class="panel" id="panel-themes"><div id="themes"></div></section>
+
+  <!-- ============ GUESTS ============ -->
+  <section class="panel" id="panel-guests"><div id="guests"></div></section>
+
+  <!-- ============ POSTERS ============ -->
+  <section class="panel" id="panel-posters"><div id="posters"></div></section>
+
+  <!-- ============ UPDATE ============ -->
+  <section class="panel" id="panel-about"><div id="about"></div></section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div>
+      <img class="logo" src="assets/mlow-logo-black.png" alt="MLOW">
+      <p>Analysis of The Real Eisman Playbook. Independent summary and commentary, not affiliated with the show.
+         Nothing here is investment advice.</p>
+      <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:.08em" id="foot-updated"></p>
+    </div>
+    <div class="foot-blossoms" aria-hidden="true">
+      <img src="assets/blossom-01-black.png" alt=""><img src="assets/blossom-03-black.png" alt="">
+      <img src="assets/blossom-05-black.png" alt=""><img src="assets/blossom-07-black.png" alt="">
+    </div>
+  </div>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Poster viewer" hidden>
+  <button class="lb-x" id="lb-x" aria-label="Close">&times;</button>
+  <button class="lb-nav lb-prev" id="lb-prev" aria-label="Previous poster">&larr;</button>
+  <figure class="lb-fig"><img id="lb-img" alt=""><figcaption id="lb-cap"></figcaption></figure>
+  <button class="lb-nav lb-next" id="lb-next" aria-label="Next poster">&rarr;</button>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
