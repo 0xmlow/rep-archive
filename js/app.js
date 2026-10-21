@@ -169,7 +169,7 @@ function onePageHtml() {
   const byNum = {}; Object.entries(CH).forEach(([id, n]) => { byNum[n] = id; });
   return `<section class="sec" id="s-onepage">
       <div class="sec-head"><img class="bl" src="${bl('01')}" alt="" aria-hidden="true">
-        <div><p class="eyebrow">Fourth edition <span class="sep">/</span> current to ${esc(D.guide.AS_OF)}</p><h2>The playbook on one page</h2></div></div>
+        <div><p class="eyebrow">Fifth edition <span class="sep">/</span> current to ${esc(D.guide.AS_OF)}</p><h2>The playbook on one page</h2></div></div>
       <ol class="onepage">${D.guide.ONE_PAGE.map(([lead, text, ch]) => `
         <li><p><b>${esc(lead)}</b> ${esc(text)}</p><a class="lnk" href="#s-${byNum[ch]}">Chapter ${ch}</a></li>`).join('')}</ol>
     </section>`;
@@ -178,7 +178,7 @@ function onePageHtml() {
 function startHereHtml() {
   return `<section class="sec" id="s-start">
       <div class="sec-head"><img class="bl" src="${bl('05')}" alt="" aria-hidden="true">
-        <div><p class="eyebrow">Reading list</p><h2>Start here: sixteen essential episodes</h2></div></div>
+        <div><p class="eyebrow">Reading list</p><h2>Start here: eighteen essential episodes</h2></div></div>
       <p>Between them, these carry most of the show's arguments. Listen in this order and the rest of the corpus will make sense.
          Every episode has a full synopsis in the Episodes tab.</p>
       <div class="tw"><table><thead><tr><th>Date</th><th>Episode</th><th>Why it matters</th></tr></thead><tbody>

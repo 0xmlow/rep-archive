@@ -3,7 +3,7 @@
 **BLOSSOM RESEARCH**
 
 Every episode of The Real Eisman Playbook, Steve Eisman's podcast, read end to end,
-including the paid tier. The fourth edition: the playbook on one page, six parts with
+including the paid tier. The fifth edition, current to 18 October 2026: the playbook on one page, six parts with
 a brief for every chapter, his stock checklist, sector playbooks and frameworks, a
 dated ledger of his calls and tripwires, a reading list and a glossary, with an
 episode browser, a theme map, a guest index, the Eisman method in fifty posters, and
