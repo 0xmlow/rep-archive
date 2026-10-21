@@ -3,9 +3,11 @@
 **BLOSSOM RESEARCH**
 
 Every episode of The Real Eisman Playbook, Steve Eisman's podcast, read end to end,
-including the paid tier: the recurring theses, the guest bench, the frameworks he
-teaches and how his calls changed, with an episode browser, a theme map, a guest
-index, the Eisman method in fifty posters, and the report as PDF and Word.
+including the paid tier. The fourth edition: the playbook on one page, six parts with
+a brief for every chapter, his stock checklist, sector playbooks and frameworks, a
+dated ledger of his calls and tripwires, a reading list and a glossary, with an
+episode browser, a theme map, a guest index, the Eisman method in fifty posters, and
+the report as PDF and Word.
 
 **Open the site:** https://0xmlow.github.io/rep-archive/
 

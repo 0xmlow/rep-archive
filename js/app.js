@@ -72,20 +72,143 @@ function block(b) {
 }
 
 /* ---------------- report ---------------- */
+/* The fourth edition arranges the report in six parts and adds an editorial layer
+   (data/guide.json): the playbook on one page, an In brief for every chapter, dated
+   "where he stands" boxes, four new chapters, a reading list and a glossary. */
+const SITE_TERMS = [[/in Appendix B/g, 'in the Episodes tab'], [/in Part VI/g, 'on the Posters tab']];
+const siteText = s => SITE_TERMS.reduce((a, [re, to]) => a.replace(re, to), s);
+const NEW_CH = { stocklens: 'STOCKLENS', sectors: 'SECTORS', frameworks: 'FRAMEWORKS', ledger: 'LEDGER' };
+const NEW_BL = { stocklens: '06', sectors: '02', frameworks: '03', ledger: '07' };
+const CH = {};
+
+function chTitle(id) { const s = D.report.sections.find(x => x.id === id); return s ? s.title : D.guide[NEW_CH[id]].title; }
+function chEyebrow(id) { const s = D.report.sections.find(x => x.id === id); return s ? s.eyebrow : D.guide[NEW_CH[id]].eyebrow; }
+const tbl = (cols, rows) => `<div class="tw"><table><thead><tr>${cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead>
+  <tbody>${rows.map(r => `<tr>${r.map((c, i) => `<td>${i === 0 ? `<b>${esc(c)}</b>` : esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+
+function briefHtml(id) {
+  const t = D.guide.IN_BRIEF[id];
+  return t ? `<div class="brief"><p class="eyebrow">In brief</p><p>${esc(siteText(t))}</p></div>` : '';
+}
+function standsHtml(id) {
+  const rows = D.guide.STANDS[id];
+  if (!rows) return '';
+  return `<div class="stands"><p class="stands-h">Where he stands, as of ${esc(D.guide.AS_OF)}</p>
+    <dl>${rows.map(([t, x, w]) => `<div><dt>${esc(t)}</dt><dd>${esc(x)}<span class="when">${esc(w)}</span></dd></div>`).join('')}</dl></div>`;
+}
+
+function newChapterBody(id) {
+  const g = D.guide;
+  if (id === 'stocklens') {
+    const L = g.STOCKLENS;
+    return L.intro.map(x => `<p>${esc(x)}</p>`).join('') +
+      `<blockquote class="q"><p>${esc(L.quote[0])}</p><cite>${esc(L.quote[1])}</cite></blockquote>
+      <h3>The long checklist, in the order he applies it</h3>
+      <ol class="rules">${L.checklist.map(([q, a, d]) => `<li><b>${esc(q)}</b> ${esc(a)}<span class="when">${esc(d)}</span></li>`).join('')}</ol>
+      <h3>Red flags that end the conversation</h3>${tbl(['Red flag', 'His example', 'Date'], L.red_flags)}
+      <h3>Selling, sizing and owning mistakes</h3><ul>${L.selling.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+      <h3>The nine verdicts he lands on</h3>
+      <p class="sub">When he sums up a stock he lands in one of these categories. They are his, not a rating system.</p>
+      ${tbl(['Verdict', 'What it means', 'His example'], L.verdicts)}`;
+  }
+  if (id === 'sectors') {
+    const S = g.SECTORS;
+    return S.intro.map(x => `<p>${esc(x)}</p>`).join('') +
+      `<h3>Valuation, on the sector's own terms</h3><ul>${S.valuation.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+      <h3>The playbooks</h3><div class="grid2 playbooks">${S.playbooks.map(([n, items]) => `
+        <div class="card"><h4>${esc(n)}</h4><ul>${items.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>`).join('')}</div>`;
+  }
+  if (id === 'frameworks') {
+    const F = g.FRAMEWORKS;
+    return `<p class="lead">${esc(F.intro)}</p><div class="fw">${F.items.map(([n, t, w]) => `
+      <div class="fw-row"><div><h4>${esc(n)}</h4><span class="when">${esc(w)}</span></div><p>${esc(t)}</p></div>`).join('')}</div>`;
+  }
+  if (id === 'ledger') {
+    const L = g.LEDGER;
+    return `<p class="lead">${esc(L.intro)}</p>
+      <h3>Standing calls</h3>${tbl(['Topic', 'His position', 'As of'], L.calls)}
+      <h3>The tripwires he watches</h3>
+      <p class="sub">The numbers and events he has said would change his view or move the market.</p>
+      ${tbl(['Tripwire', 'What he said', 'Status, ' + g.AS_OF], L.tripwires)}
+      <h3>The four conditions that would change his book</h3>
+      <p class="sub">Named in the portfolio episode of 1 July 2026. Failing these, he would rather hold and not pay the capital gains.</p>
+      <ol class="rules">${L.conditions.map(x => `<li>${esc(x)}</li>`).join('')}</ol>
+      <h3>His own scorecard</h3>${tbl(['Call', 'What happened'], L.scorecard)}`;
+  }
+  return '';
+}
+
+function chapterHtml(id) {
+  const s = D.report.sections.find(x => x.id === id);
+  const blos = s ? s.blossom : NEW_BL[id];
+  const body = s ? siteText(s.blocks.map(block).join('')) : newChapterBody(id);
+  return `<section class="sec" id="s-${id}">
+      <div class="sec-head">
+        <img class="bl" src="${bl(blos)}" alt="" aria-hidden="true">
+        <div><p class="eyebrow">Chapter ${pad2(CH[id])} <span class="sep">/</span> ${esc(chEyebrow(id))}</p><h2>${esc(chTitle(id))}</h2></div>
+      </div>
+      ${pinHtml(id)}
+      ${briefHtml(id)}
+      ${body}
+      ${standsHtml(id)}
+    </section>`;
+}
+
+function partHtml(part) {
+  const hit = posterByKey(part.poster);
+  const fig = hit ? `<figure class="part-poster"><button data-lb-rule="${hit.p.rule}" data-lb-i="${hit.i}">
+      <img src="${hit.p.src}" alt="${esc(posterAlt(hit.p))}" loading="lazy" width="540" height="810"></button>
+      <figcaption>${esc(hit.p.title)}</figcaption></figure>` : '';
+  return `<div class="part-head" id="part-${part.n}">
+      <div><p class="eyebrow">Part ${part.n}</p><h2>${esc(part.title)}</h2><p>${esc(part.blurb)}</p>
+        <ol class="part-list">${part.chapters.map(c => `<li><a href="#s-${c}"><span>${pad2(CH[c])}</span>${esc(chTitle(c))}</a></li>`).join('')}</ol></div>
+      ${fig}</div>`;
+}
+
+function onePageHtml() {
+  const byNum = {}; Object.entries(CH).forEach(([id, n]) => { byNum[n] = id; });
+  return `<section class="sec" id="s-onepage">
+      <div class="sec-head"><img class="bl" src="${bl('01')}" alt="" aria-hidden="true">
+        <div><p class="eyebrow">Fourth edition <span class="sep">/</span> current to ${esc(D.guide.AS_OF)}</p><h2>The playbook on one page</h2></div></div>
+      <ol class="onepage">${D.guide.ONE_PAGE.map(([lead, text, ch]) => `
+        <li><p><b>${esc(lead)}</b> ${esc(text)}</p><a class="lnk" href="#s-${byNum[ch]}">Chapter ${ch}</a></li>`).join('')}</ol>
+    </section>`;
+}
+
+function startHereHtml() {
+  return `<section class="sec" id="s-start">
+      <div class="sec-head"><img class="bl" src="${bl('05')}" alt="" aria-hidden="true">
+        <div><p class="eyebrow">Reading list</p><h2>Start here: sixteen essential episodes</h2></div></div>
+      <p>Between them, these carry most of the show's arguments. Listen in this order and the rest of the corpus will make sense.
+         Every episode has a full synopsis in the Episodes tab.</p>
+      <div class="tw"><table><thead><tr><th>Date</th><th>Episode</th><th>Why it matters</th></tr></thead><tbody>
+      ${D.guide.START_HERE.map(([d, t, g, why, paid]) => `<tr><td class="nowrap">${fmtDate(d)}</td>
+        <td><b>${esc(t)}</b><br><small>${esc(g)}</small>${paid ? ' <span class="pill paid">Paid</span>' : ''}</td><td>${esc(why)}</td></tr>`).join('')}
+      </tbody></table></div>
+    </section>`;
+}
+
+function glossaryHtml() {
+  return `<section class="sec" id="s-glossary">
+      <div class="sec-head"><img class="bl" src="${bl('07')}" alt="" aria-hidden="true">
+        <div><p class="eyebrow">Reference</p><h2>Glossary</h2></div></div>
+      <dl class="gloss">${D.guide.GLOSSARY.map(([t, d]) => `<div><dt>${esc(t)}</dt><dd>${esc(d)}</dd></div>`).join('')}</dl>
+    </section>`;
+}
+
 function renderReport() {
-  const r = D.report;
+  const r = D.report, g = D.guide;
   $('#hero-dek').textContent = r.meta.subtitle;
   $('#foot-updated').textContent = 'Corpus last updated ' + fmtDate(r.meta.updated);
-  $('#report').innerHTML = r.sections.map(s => `
-    <section class="sec" id="s-${s.id}">
-      <div class="sec-head">
-        <img class="bl" src="${bl(s.blossom)}" alt="" aria-hidden="true">
-        <div><p class="eyebrow">${esc(s.eyebrow)}</p><h2>${esc(s.title)}</h2></div>
-      </div>
-      ${pinHtml(s.id)}
-      ${s.blocks.map(block).join('')}
-    </section>`).join('');
-  $('#toc').innerHTML = r.sections.map(s => `<a href="#s-${s.id}">${esc(s.title)}</a>`).join('');
+  let n = 0;
+  g.PARTS.forEach(p => p.chapters.forEach(c => { CH[c] = ++n; }));
+  $('#report').innerHTML = onePageHtml() +
+    g.PARTS.map(p => partHtml(p) + p.chapters.map(chapterHtml).join('')).join('') +
+    startHereHtml() + glossaryHtml();
+  $('#toc').innerHTML = `<a href="#s-onepage">The playbook on one page</a>` +
+    g.PARTS.map(p => `<p class="toc-part">Part ${p.n}</p>` +
+      p.chapters.map(c => `<a href="#s-${c}"><span>${pad2(CH[c])}</span> ${esc(chTitle(c))}</a>`).join('')).join('') +
+    `<p class="toc-part">Reference</p><a href="#s-start">Start here</a><a href="#s-glossary">Glossary</a>`;
 
   const obs = new IntersectionObserver(es => es.forEach(e => {
     if (e.isIntersecting) {
@@ -125,7 +248,7 @@ function rulesIllustrated(items) {
 }
 
 function pinHtml(id) {
-  const key = D.posters?.pins?.[id];
+  const key = D.posters?.pins?.[id] || D.guide?.NEW_PINS?.[id];
   const hit = key && posterByKey(key);
   if (!hit) return '';
   const { p, i } = hit;
@@ -440,6 +563,7 @@ function renderAbout() {
   $('#about').innerHTML = `
     <div class="sec-head"><img class="bl" src="${bl('07')}" alt="" aria-hidden="true">
       <div><p class="eyebrow">About this report</p><h2>What this is, and how to read it</h2></div></div>
+    ${(D.guide?.ABOUT || []).slice(1).map(x => `<p style="max-width:70ch">${esc(x)}</p>`).join('')}
     <p style="max-width:70ch">An independent reading of every episode of <i>The Real Eisman Playbook</i>, Steve
        Eisman's podcast, from its launch on ${fmtDate(s.first)} to ${fmtDate(s.last)}. It is commentary and analysis.
        It is not affiliated with the show, and nothing here is investment advice.</p>
@@ -471,10 +595,11 @@ function renderAbout() {
 }
 
 /* ---------------- boot ---------------- */
-Promise.all(['report', 'episodes', 'stats', 'themes', 'guests', 'bonus', 'extras', 'synopses', 'dossiers', 'posters']
+Promise.all(['report', 'episodes', 'stats', 'themes', 'guests', 'bonus', 'extras', 'synopses', 'dossiers', 'posters', 'guide']
   .map(n => fetch(`data/${n}.json`).then(r => r.ok ? r.json() : null).catch(() => null)))
-  .then(([report, episodes, stats, themes, guests, bonus, extras, synopses, dossiers, posters]) => {
-    Object.assign(D, { report, episodes, stats, themes, guests, bonus, extras, posters });
+  .then(([report, episodes, stats, themes, guests, bonus, extras, synopses, dossiers, posters, guide]) => {
+    (episodes || []).forEach(e => { e.paidExclusive = !!e.paid && !e.youtube; });
+    Object.assign(D, { report, episodes, stats, themes, guests, bonus, extras, posters, guide });
     D.synByDate = {};
     (synopses || []).forEach(s => { D.synByDate[s.date] = s; });
     D.dosByDate = {};
