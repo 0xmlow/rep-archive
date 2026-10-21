@@ -154,7 +154,7 @@ img{max-width:100%;display:block}
   border:3px solid var(--fg);border-radius:var(--r-lg);overflow:hidden;
   box-shadow:var(--shadow-print);background:var(--surface);
 }
-.cover img{width:100%;aspect-ratio:1;object-fit:cover}
+.cover img{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover}
 .cover-cap{
   padding:var(--s3) var(--s4);border-top:1.5px solid var(--fg);
   font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;
